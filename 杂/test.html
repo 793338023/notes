@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      function createNew() {
+        // const obj = {};
+        const args = Array.from(arguments);
+        const fn = args.shift();
+        // obj.__proto__ = fn.prototype;
+
+        const obj = Object.create(fn.prototype);
+
+        const ret = fn.apply(obj, args);
+        return ret && typeof ret === "object" ? ret : obj;
+      }
+
+      function Peo(a, b) {
+        this.a = a;
+        this.b = b;
+      }
+
+      Peo.prototype.geta = function () {
+        return this.a;
+      };
+
+      const p = createNew(Peo, 1, 2);
+    </script>
+  </body>
+</html>
