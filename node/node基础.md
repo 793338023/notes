@@ -11,3 +11,7 @@ node 并发能力是很好的比 Java，因为它的异步 io
 4. node 第一个参数为啥是 err
 
 5. Buffer
+
+
+6. 监听文件变化 Chokidar 
+
