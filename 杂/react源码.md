@@ -84,3 +84,7 @@ setState 本身的方法调用是同步的，但调用了 setState 并不标志�
 是否更新组件，判断 props，state，context 是否有改变，是否 forceUpate
 
 ---
+
+浅谈对 React Fiber 的理解
+
+https://segmentfault.com/a/1190000039189408
