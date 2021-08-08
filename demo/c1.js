@@ -42,13 +42,56 @@
 
 // V();
 
-function create() {
-  const obj = {};
+// function create() {
+//   const obj = {};
 
-  const [con, ...args] = [...arguments];
+//   const [con, ...args] = [...arguments];
 
-  Object.create(obj, con);
+//   Object.create(obj, con);
 
-  con.apply(obj)
+//   con.apply(obj)
 
+// }
+
+// 归并排序
+const arr = [-1, 9, 10, 7, 6, 1, 2];
+
+mergeSort(arr, 0, arr.length - 1, new Array());
+console.log(arr);
+
+function merge(arr, left, mid, right, temp) {
+  let i = left,
+    j = mid + 1,
+    n = mid,
+    m = right,
+    k = 0;
+
+  while (i <= n && j <= m) {
+    if (arr[i] < arr[j]) {
+      temp[k++] = arr[i++];
+    } else {
+      temp[k++] = arr[j++];
+    }
+  }
+
+  while (i <= n) {
+    temp[k++] = arr[i++];
+  }
+
+  while (j <= m) {
+    temp[k++] = arr[j++];
+  }
+
+  for (let l = 0; l < k; l++) {
+    arr[l + left] = temp[l];
+  }
+}
+
+function mergeSort(arr, left, right, temp) {
+  if (left < right) {
+    const mid = Math.floor((left + right) / 2);
+    mergeSort(arr, left, mid, temp);
+    mergeSort(arr, mid + 1, right, temp);
+    merge(arr, left, mid, right, temp);
+  }
 }
