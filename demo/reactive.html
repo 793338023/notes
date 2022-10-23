@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="app">开始</div>
+    <script>
+      // k:v 原对象:代理过的对象
+      const proxyMap = new WeakMap();
+      // k:v 代理过的对象:原对象
+      const rawMap = new WeakMap();
+
+      function observer(obj, cb) {
+        const existingProxy = proxyMap.get(obj);
+        // 添加缓存 防止重新构建proxy
+        if (existingProxy) {
+          return existingProxy;
+        }
+        if (rawMap.has(obj)) {
+          return obj;
+        }
+
+        const proxy = new Proxy(obj, {
+          set(target, p, value, receiver) {
+            const ret = Reflect.set(target, p, value, receiver);
+            cb();
+            return ret;
+          },
+          get(target, p, receiver) {
+            const res = Reflect.get(target, p, receiver);
+
+            return res && typeof res === "object" ? observer(res, cb) : res;
+          },
+          deleteProperty(target, p) {
+            const ret = Reflect.deleteProperty(target, key);
+            cb();
+            return ret;
+          },
+        });
+
+        proxyMap.set(obj, proxy);
+        rawMap.set(proxy, obj);
+
+        return proxy;
+      }
+      const init = {
+        _name: "abc",
+        get name() {
+          return this._name;
+        },
+        a: {
+          c: [1, 2, 35, 6],
+        },
+      };
+
+      const ret = observer(init, () => {
+        console.log(ret);
+        console.log(init);
+        document.querySelector("#app").innerHTML = ret.name;
+      });
+
+      // setTimeout(() => {
+      //   ret._name = "啊刷空间巨大";
+      //   init._name = "啦啦啦";
+      // }, 1000);
+
+      // const parent = {
+      //   name: "parent",
+      //   get value() {
+      //     return this.name;
+      //   },
+      // };
+
+      // const handler = {
+      //   get(target, key, receiver) {
+      //     // return Reflect.get(target, key);
+      //     return Reflect.get(target, key, receiver);
+      //   },
+      // };
+
+      // const proxy = new Proxy(parent, handler);
+
+      // const child = {
+      //   name: "children",
+      // };
+
+      // // 设置obj继承与parent的代理对象proxy
+      // Object.setPrototypeOf(child, proxy);
+
+      // // log: children
+      // console.log(child.value);
+
+      const obj = new WeakMap();
+      let obj1 = { a: 1 };
+      const obj3 = { ...obj1 };
+      obj.set(obj1, 1);
+      console.log(obj.has(obj3));
+      obj1 = null;
+      console.log(obj3, obj.has(obj1));
+    </script>
+  </body>
+</html>
